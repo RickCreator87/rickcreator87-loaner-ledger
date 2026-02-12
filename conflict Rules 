@@ -1,0 +1,97 @@
+
+Conflict Rules
+
+Certain permissions cannot be granted together due to segregation of duties:
+
+1. perm_issue_credit + perm_audit_access = ❌ Conflict
+   · Credit issuers cannot audit their own transactions
+2. perm_system_config + perm_delegate_auth = ❌ Conflict
+   · System administrators cannot delegate financial authority
+3. perm_tax_override + perm_compliance_override = ⚠️ Warning
+   · Requires additional approval layers
+4. perm_revoke_credit + perm_adjust_limits = ❌ Conflict
+   · Different teams should handle these functions
+
+Escalation Paths
+
+Amount-Based Escalation
+
+Amount Required Approvals
+Up to $10,000 Automated
+$10,001 - $50,000 Supervisor
+$50,001 - $100,000 Manager
+$100,001 - $500,000 Director
+Over $500,000 C-Level + Legal
+
+Risk-Based Escalation
+
+Risk Level Escalation Threshold
+Low None
+Medium Department Head
+High Compliance + Legal
+Critical Board Committee
+
+Audit Requirements
+
+Logging Levels
+
+· Info: All permission usage logged
+· Warning: Medium+ risk permissions
+· Error: High+ risk permissions with failures
+· Critical: All critical risk permissions
+
+Retention Periods
+
+· Low Risk: 1 year
+· Medium Risk: 3 years
+· High Risk: 7 years
+· Critical Risk: Permanent
+
+Immutable Logging
+
+Required for:
+
+· All critical risk permissions
+· Tax-related permissions
+· Compliance overrides
+· System configuration changes
+
+Tax Implications
+
+Tax Event Generation
+
+Permissions that generate tax reporting requirements:
+
+· perm_issue_credit → 1099-INT if interest paid
+· perm_initiate_transfer → Potential 1099-B
+· perm_tax_override → Requires additional documentation
+
+Form Requirements
+
+Permission Forms Required
+perm_issue_credit W-9, 1099-INT
+perm_withholding_management W-4, W-9, 941
+perm_tax_reporting Various 1099 series
+
+- [ ]   Implementation Notes
+
+1. Permission Inheritance
+
+· Prerequisites are automatically granted when requesting dependent permissions
+· Inheritance chain is validated during authority creation
+
+2. Temporal Restrictions
+
+· High-risk permissions may have time-of-day restrictions
+· Critical permissions may require re-authorization after 24 hours
+
+3. Geographic Limitations
+
+· Some permissions are jurisdiction-specific
+· Tax-related permissions vary by country/state
+
+4. Delegation Constraints
+
+· Delegated permissions cannot exceed delegator's permissions
+· Maximum delegation depth: 3 levels
+· Delegations expire after 30 days by default
