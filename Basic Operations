@@ -1,0 +1,34 @@
+
+Basic Operations
+
+1. Create and Validate an Identity
+
+```bash
+# Create an identity file
+cp templates/identity-example.yaml my-identity.yaml
+# Edit my-identity.yaml with your information
+
+# Validate the identity
+python cli.py validate my-identity.yaml
+```
+
+2. Process Identity into Authority
+
+```bash
+# Create authority from identity
+python cli.py process --type individual my-identity.yaml
+
+# View the generated authority
+cat authorities/auth_*.yaml
+```
+
+3. Validate an Authority Request
+
+```bash
+# Create an authority request
+cp templates/authority-example.yaml my-authority.yaml
+# Edit my-authority.yaml
+
+# Validate against identity
+python cli.py validate my-authority.yaml --identity my-identity.yaml
+```
