@@ -1,0 +1,117 @@
+# templates/authority-example.yaml
+# Example authority file for Richard's Credit Authority
+
+authority_id: "auth_example_20240115_143000"
+identity_reference: "98765432-1234-5678-9012-345678901234"
+type: credit_issuer
+granted_at: "2026-01-15T14:30:00Z"
+expires_at: "2027-01-15T14:30:00Z"
+status: active
+granted_by: "system"
+
+permissions:
+  - read_self
+  - update_contact
+  - create_request
+  - view_credit_summary
+  - issue_credit
+  - delegate_auth
+
+scope:
+  geographic:
+    - US
+    - CA
+    - GB
+    - AU
+  
+  monetary_limits:
+    max_credit_issuance: 1000000
+    max_daily_transactions: 100
+    max_transaction_amount: 50000
+    max_monthly_volume: 2000000
+  
+  temporal:
+    valid_hours:
+      - day: mon
+        start: "09:00"
+        end: "17:00"
+      - day: tue
+        start: "09:00"
+        end: "17:00"
+      - day: wed
+        start: "09:00"
+        end: "17:00"
+      - day: thu
+        start: "09:00"
+        end: "17:00"
+      - day: fri
+        start: "09:00"
+        end: "17:00"
+    timezone: "America/Denver"
+
+constraints:
+  requires_approval: false
+  requires_dual_approval: true
+  audit_frequency: monthly
+  restrictions:
+    - "no_high_risk_jurisdictions"
+    - "requires_kyc_verification"
+    - "no_cryptocurrency_transactions"
+
+delegation_chain:
+  - authority_id: "auth_system_root_20240101"
+    granted_at: "2026-01-01T00:00:00Z"
+    granted_by: "system_bootstrap"
+
+audit_trail:
+  - timestamp: "2026-01-15T14:30:00Z"
+    action: "authority_granted"
+    performed_by: "system_auto_grant"
+    details:
+      reason: "identity_kyc_compliant"
+      score: 95
+  
+  - timestamp: "2024-01-15T14:35:00Z"
+    action: "permissions_updated"
+    performed_by: "admin_user_001"
+    details:
+      added: ["delegate_auth"]
+      removed: []
+
+tax_implications:
+  jurisdiction: "US"
+  withholding_required: true
+  tax_liability: 0
+  forms_required:
+    - "W-9"
+    - "1099-MISC"
+  reporting_frequency: "annually"
+
+metadata:
+  created_at: "2026-01-15T14:30:00Z"
+  updated_at: "2026-01-15T14:35:00Z"
+  version: "1.0"
+  tags:
+    - "example"
+    - "automated_grant"
+    - "premium_tier"
+  notes: "Example authority for demonstration purposes"
+
+# Optional: Linked resources
+linked_resources:
+  - type: "credit_policy"
+    reference: "policy_standard_issue_v2"
+    effective_date: "2026-01-01"
+  
+  - type: "compliance_rule"
+    reference: "rule_kyc_requirements_v3"
+    effective_date: "2026-12-01"
+
+# Optional: Notification preferences
+notifications:
+  email_alerts: true
+  audit_events: true
+  compliance_violations: true
+  expiration_warnings:
+    enabled: true
+    days_before: [30, 7, 1]
