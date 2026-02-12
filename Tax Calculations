@@ -1,0 +1,30 @@
+Tax Calculations
+
+Basic Tax Calculation
+
+```python
+from tax.federal.rules import FederalTaxRules
+
+tax_rules = FederalTaxRules()
+
+# Calculate income tax
+income_tax = tax_rules.calculate_income_tax(
+    taxable_income=Decimal('75000'),
+    filing_status="single",
+    year=2026
+)
+
+print(f"Total tax: ${income_tax['total_tax']:.2f}")
+print(f"Effective rate: {income_tax['effective_rate']:.2f}%")
+
+# Calculate withholding
+withholding = tax_rules.calculate_withholding(
+    payment_amount=Decimal('5000'),
+    payment_type="supplemental",
+    recipient_type="individual",
+    tax_id_provided=True
+)
+
+print(f"Withholding amount: ${withholding['withholding_amount']:.2f}")
+print(f"Net payment: ${withholding['net_amount']:.2f}")
+```
