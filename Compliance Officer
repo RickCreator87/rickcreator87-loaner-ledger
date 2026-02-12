@@ -1,0 +1,6 @@
+permissions:
+  - perm_audit_access
+  - perm_export_audit
+  - perm_compliance_override
+  - perm_generate_reports
+  - perm_view_others
