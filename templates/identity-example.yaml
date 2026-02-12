@@ -1,0 +1,83 @@
+
+Create an example identity file to demonstrate usage:
+
+```yaml
+# templates/identity-example.yaml
+# Example identity file for Richard's Credit Authority
+
+identity_id: "98765432-1234-5678-9012-345678901234"
+entity_type: individual
+
+personal_info:
+  legal_name:
+    first_name: "Richard"
+    last_name: "Kindler"
+    suffix: "Mr."
+  date_of_birth: "1987-04-25"
+  place_of_birth:
+    city: "Aurora"
+    state: "CO"
+    country: "US"
+
+government_ids:
+  - type: ssn
+    number: "522-59-2120"
+    issuing_country: "US"
+  - type: passport
+    number: "P12345678"
+    issuing_country: "US"
+    expiration_date: "2030-12-31"
+
+contact_info:
+  addresses:
+    - type: residential
+      street: "18843 e. Union pl. "
+      city: "Aurora"
+      state: "CO"
+      postal_code: "80015"
+      country: "US"
+      verified: true
+  communication:
+    email_addresses:
+      - address: "ricks.online.businesses425@gmail.com"
+        type: personal
+        verified: true
+      - address: "ricks.online.businesses425@gmail.com"
+        type: business
+        verified: false
+    phone_numbers:
+      - number: "+15551234567"
+        type: mobile
+        verified: true
+
+verified_status:
+  level: kyc_compliant
+  last_verified: "2026-01-20T14:30:00Z"
+  verified_by:
+    - government_id
+    - biometric
+    - financial_institution
+  verification_score: 92
+
+credit_authority_tags:
+  risk_level: low
+  authority_level: trusted
+  restrictions: []
+
+metadata:
+  created_at: "2026-01-15T09:00:00Z"
+  updated_at: "2026-01-20T14:30:00Z"
+  created_by: "system_import_v1"
+  source_system: "legacy_crm"
+  tags:
+    - "premium_customer"
+    - "early_adopter"
+
+external_references:
+  - system: "credit_bureau_alpha"
+    reference_id: "CB78901234"
+    reference_type: "credit_report"
+  - system: "banking_partner_beta"
+    reference_id: "BP567890"
+    reference_type: "account_link"
+```
