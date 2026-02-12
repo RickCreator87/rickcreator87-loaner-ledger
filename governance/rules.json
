@@ -1,0 +1,172 @@
+governance/rules.json
+
+```json
+{
+  "version": "1.0.0",
+  "description": "Governance rules for Richard's Credit Authority",
+  "last_updated": "2026-01-15",
+  "rules": {
+    "validation": [
+      {
+        "id": "VAL001",
+        "name": "Identity Verification Check",
+        "description": "Ensure identity meets minimum verification requirements",
+        "type": "validation",
+        "processor": "validate_identity_verification",
+        "severity": "error",
+        "enabled": true,
+        "parameters": {
+          "minimum_verification_level": "verified"
+        }
+      },
+      {
+        "id": "VAL002",
+        "name": "Authority Duration Limit",
+        "description": "Check that authority duration doesn't exceed maximum",
+        "type": "validation",
+        "processor": "check_authority_duration",
+        "severity": "error",
+        "enabled": true,
+        "parameters": {
+          "maximum_days": 365
+        }
+      },
+      {
+        "id": "VAL003",
+        "name": "Permission Hierarchy Validation",
+        "description": "Ensure permissions follow required hierarchy",
+        "type": "validation",
+        "processor": "validate_permission_hierarchy",
+        "severity": "error",
+        "enabled": true,
+        "parameters": {
+          "hierarchy": {
+            "perm_issue_credit": ["perm_view_credit_summary", "perm_create_request"],
+            "perm_delegate_auth": ["perm_issue_credit"],
+            "perm_system_config": ["perm_audit_access"]
+          }
+        }
+      }
+    ],
+    "approval": [
+      {
+        "id": "APP001",
+        "name": "Risk-Based Approval Thresholds",
+        "description": "Check if authority requires additional approval based on risk",
+        "type": "approval",
+        "processor": "check_risk_thresholds",
+        "severity": "critical",
+        "enabled": true,
+        "parameters": {
+          "thresholds": {
+            "high": {
+              "max_credit_issuance": 50000,
+              "requires_dual_approval": true
+            },
+            "medium": {
+              "max_credit_issuance": 100000,
+              "requires_dual_approval": false
+            },
+            "low": {
+              "max_credit_issuance": 1000000,
+              "requires_dual_approval": false
+            }
+          }
+        }
+      }
+    ],
+    "escalation": [
+      {
+        "id": "ESC001",
+        "name": "High Value Transaction Escalation",
+        "description": "Escalate authority requests over certain thresholds",
+        "type": "escalation",
+        "processor": "check_risk_thresholds",
+        "severity": "warning",
+        "enabled": true,
+        "parameters": {
+          "thresholds": {
+            "high": {
+              "max_credit_issuance": 250000,
+              "requires_escalation": true
+            }
+          }
+        }
+      }
+    ],
+    "compliance": [
+      {
+        "id": "COMP001",
+        "name": "Tax Compliance Check",
+        "description": "Ensure tax compliance requirements are met",
+        "type": "compliance",
+        "processor": "validate_tax_compliance",
+        "severity": "warning",
+        "enabled": true,
+        "parameters": {}
+      },
+      {
+        "id": "COMP002",
+        "name": "Geographic Restrictions",
+        "description": "Check for restricted geographic areas",
+        "type": "compliance",
+        "processor": "check_geographic_restrictions",
+        "severity": "error",
+        "enabled": true,
+        "parameters": {
+          "restricted_countries": ["CU", "IR", "KP", "SY", "RU"]
+        }
+      }
+    ],
+    "risk": [
+      {
+        "id": "RISK001",
+        "name": "Monetary Limits Validation",
+        "description": "Validate monetary limits are consistent",
+        "type": "risk",
+        "processor": "validate_monetary_limits",
+        "severity": "error",
+        "enabled": true,
+        "parameters": {}
+      },
+      {
+        "id": "RISK002",
+        "name": "Delegation Depth Check",
+        "description": "Prevent excessive delegation chains",
+        "type": "risk",
+        "processor": "check_delegation_depth",
+        "severity": "warning",
+        "enabled": true,
+        "parameters": {
+          "maximum_depth": 3
+        }
+      }
+    ],
+    "tax": [
+      {
+        "id": "TAX001",
+        "name": "Audit Requirements Check",
+        "description": "Ensure appropriate audit frequency is set",
+        "type": "tax",
+        "processor": "validate_audit_requirements",
+        "severity": "warning",
+        "enabled": true,
+        "parameters": {
+          "minimum_frequency": "quarterly"
+        }
+      },
+      {
+        "id": "TAX002",
+        "name": "Conflict of Interest Check",
+        "description": "Check for potential conflicts of interest",
+        "type": "tax",
+        "processor": "check_conflict_of_interest",
+        "severity": "critical",
+        "enabled": true,
+        "parameters": {}
+      }
+    ]
+  }
+}
+```
+
