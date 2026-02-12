@@ -1,0 +1,28 @@
+Authority Management
+
+Authority Schema
+
+Authorities define what actions an identity can perform:
+
+```yaml
+# Required fields
+authority_id: "auth_20240115_143000_abc123"
+identity_reference: "identity-uuid"
+granted_at: "2026-01-15T14:30:00Z"
+status: "active"
+permissions:
+  - "read_self"
+  - "create_request"
+  - "issue_credit"
+
+# Scope and constraints
+scope:
+  geographic: ["US", "CA"]
+  monetary_limits:
+    max_credit_issuance: 1000000
+    max_transaction_amount: 50000
+
+constraints:
+  requires_approval: false
+  audit_frequency: "monthly"
+```
