@@ -1,0 +1,58 @@
+
+
+Metadata Fields
+
+All schemas include a metadata section for system information:
+
+```yaml
+metadata:
+  created_at: "2024-01-15T10:30:00Z"    # Required
+  updated_at: "2024-01-20T14:30:00Z"    # Optional
+  created_by: "system_import_v1"        # Optional
+  source_system: "legacy_crm"           # Optional
+  version: "1.0"                        # Optional
+  tags:                                 # Optional
+    - "premium_customer"
+    - "early_adopter"
+```
+
+Schema Evolution
+
+Versioning
+
+Schemas are versioned using semantic versioning:
+
+· Major version: Breaking changes
+· Minor version: New features, backward compatible
+· Patch version: Bug fixes, backward compatible
+
+Backward Compatibility
+
+When updating schemas:
+
+1. New fields can be added (optional)
+2. Existing fields cannot be removed
+3. Field types cannot change incompatibly
+4. Enum values can be added but not removed
+
+Migration Strategy
+
+1. Support multiple schema versions concurrently
+2. Provide migration tools for old data
+3. Document breaking changes
+4. Maintain backward compatibility for at least 1 year
+
+Validation Tools
+
+Command Line
+
+```bash
+# Validate identity
+python -m validation.validate_identity identity.yaml
+
+# Validate authority
+python -m validation.validate_authority authority.yaml --identity identity.yaml
+
+# Validate tax jurisdiction
+python -m validation.validate_tax tax-calculation.yaml
+```
