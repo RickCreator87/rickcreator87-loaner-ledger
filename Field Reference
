@@ -1,0 +1,170 @@
+Field Reference
+
+Common Field Types
+
+UUID
+
+· Format: 123e4567-e89b-12d3-a456-426614174000
+· Validation: RFC 4122 compliant
+· Generation: Version 4 (random) recommended
+
+ISO Date
+
+· Format: YYYY-MM-DD
+· Example: 2027-01-15
+· Validation: Must be valid calendar date
+
+ISO Date-Time
+
+· Format: YYYY-MM-DDTHH:MM:SSZ
+· Example: 2026-01-15T14:30:00Z
+· Timezone: UTC (Z suffix)
+
+Country Code
+
+· Format: 2-letter ISO 3166-1 alpha-2
+· Examples: US, CA, GB, AU
+· Validation: Must be valid ISO code
+
+State Code
+
+· Format: 2-letter USPS code (US only)
+· Examples: CO, CA, NY, TX
+· Validation: Must be valid US state code
+
+Time
+
+· Format: HH:MM (24-hour)
+· Examples: 09:00, 14:30, 23:59
+· Validation: Must be valid time
+
+Pattern Fields
+
+Field Pattern Example
+authority_id ^auth_[A-Za-z0-9_-]+$ auth_20240115_143000
+permission_id ^perm_[a-z_]+$ perm_issue_credit
+jurisdiction_code ^[A-Z]{2}(-[A-Z0-9]+)?$ US, US-CO, US-CO-031
+tax_id ^[A-Z0-9-]+$ 123-45-6789, 12-3456789
+
+Enumeration Fields
+
+Entity Types
+
+· individual
+· business
+· government_entity
+· financial_institution
+· trust
+
+Verification Levels
+
+· unverified
+· basic
+· verified
+· fully_verified
+· kyc_compliant
+
+Authority Status
+
+· active
+· pending
+· suspended
+· revoked
+· expired
+
+Risk Levels
+
+· low
+· medium
+· high
+· critical
+
+Audit Frequencies
+
+· daily
+· weekly
+· monthly
+· quarterly
+· annually
+
+Monetary Fields
+
+All monetary fields are defined as numbers with implied currency (USD unless specified). They should be formatted without currency symbols in YAML/JSON.
+
+```yaml
+max_credit_issuance: 1000000    # $1,000,000
+max_transaction_amount: 50000   # $50,000
+tax_liability: 1500.75          # $1,500.75
+```
+
+Array Field Guidelines
+
+Government IDs
+
+```yaml
+government_ids:
+  - type: "ssn"                 # ssn, passport, drivers_license, etc.
+    number: "123-45-6789"
+    issuing_country: "US"
+    issue_date: "2010-05-15"
+    expiration_date: "2030-05-15"
+```
+
+Permissions
+
+```yaml
+permissions:
+  - "read_self"
+  - "create_request"
+  - "issue_credit"
+```
+
+Geographic Scope
+
+```yaml
+geographic:
+  - "US"    # United States
+  - "CA"    # Canada
+  - "GB"    # United Kingdom
+  - "AU"    # Australia
+```
+
+Object Field Guidelines
+
+Legal Name
+
+```yaml
+legal_name:
+  first_name: "John"
+  middle_name: "Robert"    # Optional
+  last_name: "Doe"
+  suffix: "Jr."            # Optional (Jr., Sr., II, III, etc.)
+```
+
+Address
+
+```yaml
+addresses:
+  - type: "residential"    # residential, business, mailing, legal
+    street: "123 Main St"
+    unit: "Apt 4B"         # Optional
+    city: "Denver"
+    state: "CO"
+    postal_code: "80202"
+    country: "US"
+    verified: true
+```
+
+Verification Status
+
+```yaml
+verified_status:
+  level: "kyc_compliant"
+  last_verified: "2024-01-15T10:30:00Z"
+  verified_by:
+    - "government_id"
+    - "biometric"
+    - "financial_institution"
+  verification_score: 95    # 0-100 scale
+```
+
