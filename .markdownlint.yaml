@@ -1,0 +1,11 @@
+.markdownlint.yaml
+
+```yaml
+default: true
+MD013: false  # Line length
+MD024: false  # Multiple headings with same content
+MD033: false  # Allow inline HTML
+MD034: false  # No bare URLs
+MD036: false  # Emphasis used instead of heading
+MD041: false  # First line should be top level heading
+```
