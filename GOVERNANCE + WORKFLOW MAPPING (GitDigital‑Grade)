@@ -1,0 +1,23 @@
+
+✅ 5. GOVERNANCE + WORKFLOW MAPPING (GitDigital‑Grade)
+
+Workflow Sequence
+1. Loan Proposal Created  
+2. Authority Check (≤ $100k aggregate)  
+3. Staged Funding Plan Approved  
+4. DocuSign Execution  
+5. Loan Recorded in Loaner Ledger Repo  
+6. Profit‑Based Repayment Automation Enabled  
+7. Milestone Review Every 30 Days  
+8. Loan Closure + Archive
+
+Repos Involved
+| Repo | Purpose |
+|------|---------|
+| personal-credit-authority | Stores authority limits, facilitator permissions |
+| loaner-ledger | Records loan issuance, repayments, status |
+| agreement-templates | Stores this template + future versions |
+| credit-tools | Automates repayment logic |
+| loan-disbursement | Tracks staged funding releases |
+
+---
