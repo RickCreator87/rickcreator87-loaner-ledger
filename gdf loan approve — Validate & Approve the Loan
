@@ -1,0 +1,23 @@
+
+
+⭐ 3. gdf loan approve — Validate & Approve the Loan
+
+Command
+`
+gdf loan approve gdp-loan-2026-02-06-01
+`
+
+What it does
+- Confirms authority limit  
+- Confirms staged funding plan  
+- Generates approval record  
+- Moves agreement → /executed/  
+- Activates ledger entry  
+
+Output
+`
+Loan GDP-LOAN-2026-02-06-01 approved.
+Authority validated: OK
+Staged funding: OK
+Ledger entry activated.
+`
