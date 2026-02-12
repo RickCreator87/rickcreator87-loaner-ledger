@@ -1,0 +1,304 @@
+schemas/identity.schema.yaml file:
+
+```yaml
+# schemas/identity.schema.yaml
+# Core identity schema for Richard's Credit Authority
+# Defines the structure for personal/entity identity verification
+
+$schema: http://json-schema.org/draft-07/schema#
+$id: https://github.com/RickCreator87/richards-credit-authority/schemas/identity.schema.yaml
+
+title: Credit Authority Identity Schema
+description: Digital identity representation for credit and authority systems
+version: 1.0.0
+
+type: object
+required:
+  - identity_id
+  - entity_type
+  - verified_status
+  - created_at
+
+properties:
+  # Core Identification
+  identity_id:
+    type: string
+    format: uuid
+    description: Unique identifier for this identity record
+    example: "550e8400-e29b-41d4-a716-446655440000"
+
+  entity_type:
+    type: string
+    enum:
+      - individual
+      - business
+      - government_entity
+      - financial_institution
+      - trust
+    description: Type of entity this identity represents
+
+  # Personal Information (for individuals)
+  personal_info:
+    type: object
+    properties:
+      legal_name:
+        type: object
+        properties:
+          first_name:
+            type: string
+            minLength: 1
+            maxLength: 100
+          middle_name:
+            type: string
+            maxLength: 100
+          last_name:
+            type: string
+            minLength: 1
+            maxLength: 100
+          suffix:
+            type: string
+            enum: ["Jr.", "Sr.", "II", "III", "IV", "PhD", "Esq."]
+
+      date_of_birth:
+        type: string
+        format: date
+        description: ISO 8601 date format (YYYY-MM-DD)
+
+      place_of_birth:
+        type: object
+        properties:
+          city:
+            type: string
+          state:
+            type: string
+          country:
+            type: string
+            pattern: "^[A-Z]{2}$"
+
+  # Government Issued Identifiers
+  government_ids:
+    type: array
+    items:
+      type: object
+      required:
+        - type
+        - number
+        - issuing_country
+      properties:
+        type:
+          type: string
+          enum:
+            - ssn
+            - passport
+            - drivers_license
+            - national_id
+            - tax_id
+            - ein
+        number:
+          type: string
+          pattern: "^[A-Z0-9-]+$"
+        issuing_country:
+          type: string
+          pattern: "^[A-Z]{2}$"
+        issue_date:
+          type: string
+          format: date
+        expiration_date:
+          type: string
+          format: date
+        issuing_authority:
+          type: string
+
+  # Contact Information
+  contact_info:
+    type: object
+    properties:
+      addresses:
+        type: array
+        items:
+          type: object
+          required:
+            - type
+            - street
+            - city
+            - country
+          properties:
+            type:
+              type: string
+              enum: ["residential", "business", "mailing", "legal"]
+            street:
+              type: string
+            unit:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            postal_code:
+              type: string
+            country:
+              type: string
+              pattern: "^[A-Z]{2}$"
+            verified:
+              type: boolean
+              default: false
+
+      communication:
+        type: object
+        properties:
+          email_addresses:
+            type: array
+            items:
+              type: object
+              properties:
+                address:
+                  type: string
+                  format: email
+                type:
+                  type: string
+                  enum: ["personal", "business", "recovery"]
+                verified:
+                  type: boolean
+                  default: false
+
+          phone_numbers:
+            type: array
+            items:
+              type: object
+              properties:
+                number:
+                  type: string
+                  pattern: "^\\+[1-9]\\d{1,14}$"
+                type:
+                  type: string
+                  enum: ["mobile", "home", "business", "fax"]
+                verified:
+                  type: boolean
+                  default: false
+
+  # Verification Status
+  verified_status:
+    type: object
+    required:
+      - level
+      - last_verified
+    properties:
+      level:
+        type: string
+        enum:
+          - unverified
+          - basic
+          - verified
+          - fully_verified
+          - kyc_compliant
+      last_verified:
+        type: string
+        format: date-time
+      verified_by:
+        type: array
+        items:
+          type: string
+          enum:
+            - self_asserted
+            - government_id
+            - biometric
+            - credit_bureau
+            - financial_institution
+            - government_agency
+      verification_score:
+        type: number
+        minimum: 0
+        maximum: 100
+
+  # Credit Authority Specific
+  credit_authority_tags:
+    type: object
+    properties:
+      risk_level:
+        type: string
+        enum: ["low", "medium", "high", "unknown"]
+      authority_level:
+        type: string
+        enum: ["basic", "verified", "trusted", "privileged"]
+      restrictions:
+        type: array
+        items:
+          type: string
+
+  # Metadata
+  metadata:
+    type: object
+    properties:
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      created_by:
+        type: string
+        description: System or user that created this identity
+      source_system:
+        type: string
+        description: Original system this identity was imported from
+      tags:
+        type: array
+        items:
+          type: string
+
+  # Links to Other Systems
+  external_references:
+    type: array
+    items:
+      type: object
+      properties:
+        system:
+          type: string
+        reference_id:
+          type: string
+        reference_type:
+          type: string
+
+# Validation Rules
+allOf:
+  - if:
+      properties:
+        entity_type:
+          const: individual
+    then:
+      required:
+        - personal_info
+
+  - if:
+      properties:
+        entity_type:
+          const: business
+    then:
+      required:
+        - business_info
+
+# Additional Constraints
+additionalProperties: false
+
+# Examples
+examples:
+  - identity_id: "123e4567-e89b-12d3-a456-426614174000"
+    entity_type: "individual"
+    personal_info:
+      legal_name:
+        first_name: "John"
+        last_name: "Doe"
+      date_of_birth: "1980-01-15"
+      place_of_birth:
+        city: "Denver"
+        state: "CO"
+        country: "US"
+    verified_status:
+      level: "verified"
+      last_verified: "2026-01-15T10:30:00Z"
+      verified_by: ["government_id"]
+      verification_score: 85
+    metadata:
+      created_at: "2026-01-10T14:30:00Z"
+      updated_at: "2026-01-15T10:30:00Z"
+```
