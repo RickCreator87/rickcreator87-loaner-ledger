@@ -1,0 +1,39 @@
+
+✅ 6. REPO‑READY SPECIFICATION (Drop‑In Markdown)
+
+`
+
+Loan Agreement Specification
+
+Identifiers
+- agreementtype: businessloanstagedfunding
+- version: 1.0
+- executed: true
+- execution_date: 2026-02-06
+
+Parties
+facilitator:
+  name: "Richard D. Kindler"
+  authority_limit: 100000
+
+company:
+  name: "GitDigital Products"
+
+co_owners:
+  - name: "Richard Kindler"
+  - name: "Tara Triolo"
+
+Loan Terms
+principal: 3000
+interest_rate: 0
+graceperiodmonths: 12
+repaymentmethod: "automatedfrom_profits"
+personal_liability: false
+
+Signatures
+- facilitator: signed
+- coownerone: signed
+- coownertwo: signed
+`
+
+---
