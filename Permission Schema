@@ -1,0 +1,217 @@
+Permission Schema
+
+Overview
+
+The Permission schema defines individual permissions, their relationships, and requirements.
+
+Schema Location
+
+· File: schemas/permission.schema.yaml
+· JSON Schema ID: https://github.com/RickCreator87/richards-credit-authority/schemas/permission.schema.yaml
+
+Structure
+
+```yaml
+permission_id: string(pattern)          # Pattern: ^perm_[a-z_]+$
+category: string(enum)                  # Permission category
+name: string                            # Human-readable name
+description: string                     # Detailed description
+risk_level: string(enum)                # Risk assessment
+prerequisites: array(string)            # Required permissions
+conflicts_with: array(string)           # Conflicting permissions
+validation_rules: object                # Usage rules
+escalation_path: object                 # Escalation requirements
+audit_requirements: object              # Audit rules
+tax_implications: object                # Tax considerations
+metadata: object                        # Metadata
+```
+
+- [ ] added
+
+
+
+Risk Levels
+
+Level Approval Required Audit Frequency Impact
+low Automated Quarterly Minimal
+medium Supervisor Monthly Moderate
+high Manager + Compliance Weekly Significant
+critical Director + Legal Daily Major
+
+Validation Rules
+
+```yaml
+validation_rules:
+  requires_approval: boolean            # Manual approval required
+  minimum_verification_level: string    # Required identity verification
+  maximum_frequency:
+    count: integer                      # Max operations
+    period: string                      # Time period (minute, hour, day, etc.)
+```
+
+
+- [ ] added
+
+
+Example
+
+```yaml
+permission_id: "perm_issue_credit"
+category: "credit_operations"
+name: "Issue Credit"
+description: "Allows issuing new credit lines to verified identities"
+risk_level: "high"
+prerequisites:
+  - "perm_view_credit_summary"
+  - "perm_create_request"
+validation_rules:
+  requires_approval: true
+  minimum_verification_level: "kyc_compliant"
+escalation_path:
+  requires_higher_authority: true
+  escalation_threshold: 100000
+audit_requirements:
+  log_level: "critical"
+  retention_period: "7years"
+```
+
+
+- [ ] Added
+
+Tax Schema
+
+Overview
+
+The Tax schema defines tax jurisdictions, rates, and calculation rules.
+
+Schema Location
+
+· File: schemas/tax.schema.yaml
+· JSON Schema ID: https://github.com/RickCreator87/richards-credit-authority/schemas/tax.schema.yaml
+
+Structure
+
+```yaml
+jurisdiction_code: string(pattern)      # Pattern: ^[A-Z]{2}(-[A-Z0-9]+)?$
+jurisdiction_name: string               # Human-readable name
+jurisdiction_type: string(enum)         # Federal, state, etc.
+effective_date: string(date)            # Rule effective date
+expiration_date: string(date)           # Rule expiration date
+tax_rates: array                        # Tax rate definitions
+reporting_requirements: object          # Reporting rules
+withholding_rules: object               # Withholding requirements
+compliance_rules: object                # Compliance requirements
+reciprocity_agreements: array           # Inter-jurisdiction agreements
+calculation_engine: object              # Calculation methods
+metadata: object                        # Metadata
+```
+
+
+- [ ] added
+
+
+Jurisdiction Types
+
+Type Description Examples
+federal National government US, CA, GB
+state State/province level US-CO, US-NY
+provincial Province (Canada) CA-ON, CA-QC
+county County level US-CO-031 (Denver)
+city Municipal level US-CO-DEN
+special_district Special tax districts Various
+
+Tax Rate Definitions
+
+```yaml
+tax_rates:
+  - tax_type: "income"                  # Type of tax
+    rate: 4.4                           # Tax rate percentage
+    rate_type: "flat"                   # flat, graduated, marginal
+    brackets:                           # For graduated rates
+      - min_amount: 0
+        max_amount: 11000
+        rate: 10
+    applies_to: ["individuals"]         # Applicable entities
+```
+- [ ] 
+      
+Tax Types
+
+Type Description Typical Rates
+income Income tax 0-37% (US Federal)
+sales Sales tax 0-10%
+withholding Withholding tax 22-24%
+excise Excise tax Varies
+property Property tax 0-3%
+payroll Payroll tax 7.65% (US)
+
+Example
+
+```yaml
+jurisdiction_code: "US"
+jurisdiction_name: "United States Federal"
+jurisdiction_type: "federal"
+effective_date: "2024-01-01"
+tax_rates:
+  - tax_type: "income"
+    rate_type: "graduated"
+    brackets:
+      - min_amount: 0
+        max_amount: 11000
+        rate: 10
+      - min_amount: 11001
+        max_amount: 44725
+        rate: 12
+reporting_requirements:
+  forms:
+    - form_code: "1040"
+      frequency: "annually"
+      due_date: "04-15"
+```
+
+Validation Rules
+
+Cross-Schema Validation
+
+The system enforces relationships between schemas:
+
+1. Identity → Authority: Authority type must be compatible with identity type
+2. Authority → Permission: Permissions must be valid and prerequisites satisfied
+3. Tax → Jurisdiction: Tax calculations must use valid jurisdiction codes
+
+Business Logic Rules
+
+Identity Validation
+
+· Individuals must be at least 18 years old (for credit issuance)
+· Business entities must have valid tax IDs
+· Government IDs must not be expired
+
+Authority Validation
+
+· Credit issuance limits must be reasonable for verification level
+· Delegation chains cannot exceed 3 levels
+· Geographic restrictions must be valid ISO codes
+
+Tax Validation
+
+· Withholding required for US jurisdiction payments over $600
+· Proper forms required based on payment type and amount
+· State tax calculations must consider reciprocity agreements
+
+Custom Validation
+
+You can extend validation by creating custom validators:
+
+```python
+from validation.validate_identity import IdentityValidator
+
+class CustomIdentityValidator(IdentityValidator):
+    def _validate_custom_rule(self, data):
+        # Your custom validation logic
+        pass
+```
+
+
+
+
