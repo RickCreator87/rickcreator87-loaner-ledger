@@ -1,0 +1,48 @@
+Quick Start
+
+1. Create an example identity:
+
+```bash
+python cli.py process --type individual templates/identity-example.yaml
+```
+
+1. Validate an authority request:
+
+```bash
+python cli.py validate templates/authority-example.yaml
+```
+
+1. Run the test suite:
+
+```bash
+pytest tests/
+```
+
+Support
+
+Documentation
+
+· Usage Guide
+· Schema Reference
+· API Documentation
+
+Community
+
+· GitHub Issues for bug reports
+· Discussions for questions
+· Pull requests for contributions
+
+Professional Support
+
+Available for enterprise customers:
+
+· implementation@richards-credit-authority.example.com
+
+License
+
+Copyright © 2026 Richard's Credit Authority. All rights reserved.
+
+Proprietary software. See LICENSE file for details.
+
+```
+
