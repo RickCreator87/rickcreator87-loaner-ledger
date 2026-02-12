@@ -1,0 +1,33 @@
+
+
+
+
+Delegate Authority
+
+```python
+# Create delegated authority
+delegated_authority = {
+    "authority_id": f"delegated_auth_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+    "identity_reference": "delegate-identity-uuid",
+    "type": "delegate",
+    "granted_at": datetime.utcnow().isoformat() + "Z",
+    "expires_at": (datetime.utcnow() + timedelta(days=30)).isoformat() + "Z",
+    "status": "active",
+    "granted_by": "parent-authority-id",
+    "permissions": ["create_request"],  # Limited permissions
+    "scope": {
+        "geographic": ["US"],
+        "monetary_limits": {
+            "max_credit_issuance": 50000,
+            "max_transaction_amount": 5000
+        }
+    },
+    "delegation_chain": [
+        {
+            "authority_id": "parent-authority-id",
+            "granted_at": "2026-01-01T00:00:00Z",
+            "granted_by": "system"
+        }
+    ]
+}
+```
