@@ -1,0 +1,24 @@
+Verify Identity
+
+```python
+from validation.validate_identity import IdentityValidator
+
+# Load identity from file
+with open("identity.yaml", "r") as f:
+    identity_data = yaml.safe_load(f)
+
+# Update verification status
+identity_data["verified_status"] = {
+    "level": "kyc_compliant",
+    "last_verified": "2026-01-16T14:30:00Z",
+    "verified_by": ["government_id", "biometric"],
+    "verification_score": 95
+}
+
+# Re-validate
+validator = IdentityValidator()
+result = validator.validate(identity_data)
+
+if result["valid"]:
+    print("Identity verified successfully!")
+```
