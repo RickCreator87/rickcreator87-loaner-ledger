@@ -1,0 +1,137 @@
+
+
+
+
+
+
+- [ ] 
+
+
+
+pyproject.toml
+
+```toml
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "richards-credit-authority"
+version = "1.0.0"
+description = "Comprehensive identity, authority, and tax compliance system"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Proprietary"}
+authors = [
+  {name = "Richard Creator", email = "rickcreator87@example.com"}
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Financial and Insurance Industry",
+  "Topic :: Office/Business :: Financial",
+  "License :: Other/Proprietary License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+  "pyyaml>=6.0",
+  "jsonschema>=4.19",
+  "python-dateutil>=2.8",
+  "pydantic>=2.0",
+  "fastapi>=0.104",  # For future API
+  "uvicorn>=0.24",   # For future API
+  "sqlalchemy>=2.0", # For future database
+  "redis>=5.0",      # For future caching
+  "pytest>=7.4",     # For testing
+]
+
+[project.optional-dependencies]
+dev = [
+  "black>=23.0",
+  "flake8>=6.0",
+  "mypy>=1.0",
+  "isort>=5.12",
+  "pytest-cov>=4.0",
+  "pre-commit>=3.0",
+]
+docs = [
+  "mkdocs>=1.5",
+  "mkdocs-material>=9.0",
+  "mkdocstrings[python]>=0.24",
+]
+
+[project.urls]
+Homepage = "https://github.com/RickCreator87/richards-credit-authority"
+Repository = "https://github.com/RickCreator87/richards-credit-authority"
+Issues = "https://github.com/RickCreator87/richards-credit-authority/issues"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+
+
+- [ ] added
+
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = [
+  "tests",
+  "validation",
+  "governance",
+  "tax",
+]
+python_files = [
+  "test_*.py",
+  "*_test.py",
+]
+python_classes = [
+  "Test*",
+]
+python_functions = [
+  "test_*",
+]
+
+[project.scripts]
+credit-authority = "cli:main"
+```
