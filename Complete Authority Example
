@@ -1,0 +1,158 @@
+Complete Authority Example
+
+```yaml
+authority_id: "auth_business_20240120_143000"
+identity_reference: "98765432-1234-5678-9012-345678901234"
+type: "credit_issuer"
+granted_at: "2026-01-20T14:30:00Z"
+expires_at: "2027-01-20T14:30:00Z"
+status: "active"
+granted_by: "compliance_officer_001"
+permissions:
+  - "read_self"
+  - "update_contact"
+  - "view_credit_summary"
+  - "create_request"
+  - "issue_credit"
+  - "bulk_operations"
+scope:
+  geographic:
+    - "US"
+    - "CA"
+    - "GB"
+    - "AU"
+  monetary_limits:
+    max_credit_issuance: 5000000
+    max_daily_transactions: 500
+    max_transaction_amount: 100000
+    max_monthly_volume: 10000000
+  temporal:
+    valid_hours:
+      - day: "mon"
+        start: "08:00"
+        end: "18:00"
+      - day: "tue"
+        start: "08:00"
+        end: "18:00"
+      - day: "wed"
+        start: "08:00"
+        end: "18:00"
+      - day: "thu"
+        start: "08:00"
+        end: "18:00"
+      - day: "fri"
+        start: "08:00"
+        end: "18:00"
+    timezone: "America/Los_Angeles"
+constraints:
+  requires_approval: true
+  requires_dual_approval: false
+  audit_frequency: "weekly"
+  restrictions:
+    - "no_cryptocurrency"
+    - "requires_kyc_verification"
+delegation_chain: []
+audit_trail:
+  - timestamp: "2024-01-20T14:30:00Z"
+    action: "authority_granted"
+    performed_by: "compliance_officer_001"
+    details:
+      reason: "business_verification_complete"
+      score: 95
+tax_implications:
+  jurisdiction: "US"
+  withholding_required: true
+  tax_liability: 0
+  forms_required:
+    - "W-9"
+    - "1099-MISC"
+metadata:
+  created_at: "2026-01-20T14:30:00Z"
+  updated_at: "2026-01-20T14:30:00Z"
+  version: "1.0"
+  tags:
+    - "business"
+    - "verified"
+    - "premium"
+```
+
+- [ ] added
+
+
+Complete Tax Jurisdiction Example
+
+```yaml
+jurisdiction_code: "US-CO"
+jurisdiction_name: "State of Colorado"
+jurisdiction_type: "state"
+effective_date: "2026-01-01"
+expiration_date: "2027-12-31"
+parent_jurisdiction: "US"
+tax_rates:
+  - tax_type: "income"
+    rate: 4.4
+    rate_type: "flat"
+    applies_to:
+      - "individuals"
+      - "corporations"
+      - "partnerships"
+    exemptions:
+      - exemption_type: "standard_deduction"
+        amount: 14600
+        qualification:
+          filing_status: "single"
+  - tax_type: "sales"
+    rate: 2.9
+    rate_type: "flat"
+    applies_to:
+      - "businesses"
+    exemptions:
+      - exemption_type: "grocery"
+        description: "Grocery food items"
+reporting_requirements:
+  forms:
+    - form_code: "DR 0104"
+      description: "Colorado Income Tax Return"
+      frequency: "annually"
+      due_date: "04-15"
+    - form_code: "DR 0100"
+      description: "Colorado Sales Tax Return"
+      frequency: "quarterly"
+      due_date: "last_day_of_month_after_quarter"
+  thresholds:
+    filing_required: 12500
+    sales_tax_nexus: 100000
+withholding_rules:
+  required: true
+  threshold: 0
+  rates:
+    regular: 4.4
+    supplemental: 4.4
+compliance_rules:
+  record_keeping_years: 7
+  penalties:
+    - violation: "late_filing"
+      penalty_amount: 50
+      penalty_type: "fixed"
+    - violation: "late_payment"
+      penalty_amount: 0.05
+      penalty_type: "percentage"
+  grace_period_days: 15
+reciprocity_agreements:
+  - with_jurisdiction: "US-WY"
+    agreement_type: "income_tax"
+    effective_date: "2020-01-01"
+    terms:
+      description: "No income tax reciprocity"
+calculation_engine:
+  engine_type: "formula"
+  formula: "taxable_income * rate"
+  rounding_rules:
+    method: "nearest"
+    increment: 0.01
+metadata:
+  created_at: "2026-01-15T12:00:00Z"
+  updated_at: "2026-01-15T12:00:00Z"
+  source: "Colorado Department of Revenue"
+  verification_status: "official"
+```
