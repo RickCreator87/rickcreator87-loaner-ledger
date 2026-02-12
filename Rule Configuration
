@@ -1,0 +1,25 @@
+Rule Configuration
+
+Create custom rules in governance/rules.json:
+
+```json
+{
+  "rules": {
+    "validation": [
+      {
+        "id": "CUSTOM001",
+        "name": "Custom Business Rule",
+        "description": "Your custom rule description",
+        "type": "validation",
+        "processor": "check_custom_business_rule",
+        "severity": "warning",
+        "enabled": true,
+        "parameters": {
+          "custom_parameter": "value"
+        }
+      }
+    ]
+  }
+}
+```
+
