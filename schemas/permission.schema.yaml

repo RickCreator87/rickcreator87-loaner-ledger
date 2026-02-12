@@ -1,0 +1,179 @@
+
+schemas/permission.schema.yaml
+
+```yaml
+# schemas/permission.schema.yaml
+# Permission matrix and access control schema
+
+$schema: http://json-schema.org/draft-07/schema#
+$id: https://RickCreator87.github.io/richards-credit-authority/schemas/permission.schema.yaml
+
+title: Permission Matrix Schema
+description: Defines granular permissions and their relationships
+version: 1.0.0
+
+type: object
+required:
+  - permission_id
+  - category
+  - description
+  - risk_level
+
+properties:
+  permission_id:
+    type: string
+    pattern: "^perm_[a-z_]+$"
+    description: Unique permission identifier
+
+  category:
+    type: string
+    enum:
+      - identity_management
+      - credit_operations
+      - financial_transactions
+      - system_administration
+      - audit_compliance
+      - tax_operations
+      - delegation_management
+
+  name:
+    type: string
+    description: Human-readable permission name
+
+  description:
+    type: string
+    description: Detailed description of what this permission allows
+
+  risk_level:
+    type: string
+    enum:
+      - low
+      - medium
+      - high
+      - critical
+    description: Risk associated with granting this permission
+
+  prerequisites:
+    type: array
+    items:
+      type: string
+      pattern: "^perm_[a-z_]+$"
+    description: Other permissions required before this can be granted
+
+  conflicts_with:
+    type: array
+    items:
+      type: string
+      pattern: "^perm_[a-z_]+$"
+    description: Permissions that cannot be granted alongside this one
+
+  validation_rules:
+    type: object
+    properties:
+      requires_approval:
+        type: boolean
+      minimum_verification_level:
+        type: string
+        enum: ["basic", "verified", "fully_verified", "kyc_compliant"]
+      maximum_frequency:
+        type: object
+        properties:
+          count:
+            type: integer
+            minimum: 1
+          period:
+            type: string
+            enum: ["minute", "hour", "day", "week", "month"]
+
+  escalation_path:
+    type: object
+    properties:
+      requires_higher_authority:
+        type: boolean
+      escalation_threshold:
+        type: number
+        minimum: 0
+      escalation_contacts:
+        type: array
+        items:
+          type: string
+          format: email
+
+  audit_requirements:
+    type: object
+    properties:
+      log_level:
+        type: string
+        enum: ["info", "warning", "error", "critical"]
+      retention_period:
+        type: string
+        enum: ["30days", "90days", "1year", "7years", "permanent"]
+      immutable_log:
+        type: boolean
+
+  tax_implications:
+    type: object
+    properties:
+      generates_tax_event:
+        type: boolean
+      reporting_requirement:
+        type: string
+      form_codes:
+        type: array
+        items:
+          type: string
+
+  metadata:
+    type: object
+    properties:
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      version:
+        type: string
+      deprecated:
+        type: boolean
+        default: false
+      replacement:
+        type: string
+        pattern: "^perm_[a-z_]+$"
+
+additionalProperties: false
+
+examples:
+  - permission_id: "perm_issue_credit"
+    category: "credit_operations"
+    name: "Issue Credit"
+    description: "Allows issuing new credit lines to verified identities"
+    risk_level: "high"
+    prerequisites:
+      - "perm_view_credit_summary"
+    conflicts_with: []
+    validation_rules:
+      requires_approval: true
+      minimum_verification_level: "kyc_compliant"
+      maximum_frequency:
+        count: 50
+        period: "day"
+    escalation_path:
+      requires_higher_authority: true
+      escalation_threshold: 100000
+      escalation_contacts:
+        - "compliance@example.com"
+    audit_requirements:
+      log_level: "critical"
+      retention_period: "7years"
+      immutable_log: true
+    tax_implications:
+      generates_tax_event: true
+      reporting_requirement: "Annual"
+      form_codes: ["1099-INT", "W-9"]
+    metadata:
+      created_at: "2026-01-15T10:00:00Z"
+      updated_at: "2026-01-15T10:00:00Z"
+      version: "1.0"
+      deprecated: false
+```
