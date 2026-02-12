@@ -1,0 +1,45 @@
+Examples
+
+Complete Identity Example
+
+```yaml
+identity_id: "98765432-1234-5678-9012-345678901234"
+entity_type: "business"
+business_info:
+  legal_name: "Example Corporation"
+  dba: "Example Corp"
+  tax_id: "12-3456789"
+  incorporation_date: "2010-05-15"
+  business_type: "corporation"
+  industry: "technology"
+contact_info:
+  addresses:
+    - type: "business"
+      street: "456 Business Ave"
+      city: "San Francisco"
+      state: "CA"
+      postal_code: "94105"
+      country: "US"
+      verified: true
+  communication:
+    email_addresses:
+      - address: "contact@example.com"
+        type: "business"
+        verified: true
+government_ids:
+  - type: "ein"
+    number: "12-3456789"
+    issuing_country: "US"
+verified_status:
+  level: "kyc_compliant"
+  last_verified: "2024-01-20T14:30:00Z"
+  verified_by: ["financial_institution", "government_id"]
+  verification_score: 98
+credit_authority_tags:
+  risk_level: "medium"
+  authority_level: "trusted"
+metadata:
+  created_at: "2024-01-15T09:00:00Z"
+  updated_at: "2024-01-20T14:30:00Z"
+  source_system: "business_onboarding"
+```
