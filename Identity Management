@@ -1,0 +1,41 @@
+Identity Management
+
+Identity Schema
+
+Identities are defined using YAML files with the following structure:
+
+```yaml
+# Required fields
+identity_id: "uuid-string"
+entity_type: "individual"  # or business, government_entity, etc.
+verified_status:
+  level: "verified"  # unverified, basic, verified, fully_verified, kyc_compliant
+  last_verified: "2026-01-15T10:30:00Z"
+metadata:
+  created_at: "2026-01-15T10:30:00Z"
+
+# Personal information (for individuals)
+personal_info:
+  legal_name:
+    first_name: "John"
+    last_name: "Doe"
+  date_of_birth: "1980-01-15"
+  place_of_birth:
+    city: "Denver"
+    state: "CO"
+    country: "US"
+
+# Contact information
+contact_info:
+  addresses:
+    - type: "residential"
+      street: "123 Main St"
+      city: "Denver"
+      state: "CO"
+      country: "US"
+      verified: true
+  communication:
+    email_addresses:
+      - address: "john@example.com"
+        verified: true
+```
