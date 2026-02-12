@@ -1,0 +1,19 @@
+
+
+⭐ 4. gdf loan sign — Record Digital Signatures
+
+Command
+`
+gdf loan sign gdp-loan-2026-02-06-01 \
+  --party facilitator \
+  --signature "R.K." \
+  --hash "71C4B4978007446"
+`
+
+Repeat for each signer.
+
+What it does
+- Appends signature to signatures.log.md  
+- Updates metadata: signed: true  
+- Locks agreement from modification  
+
