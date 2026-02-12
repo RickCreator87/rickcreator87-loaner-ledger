@@ -1,0 +1,30 @@
+
+
+
+State Tax Calculation
+
+```python
+from tax.state.colorado.rules import ColoradoTaxRules
+
+co_tax = ColoradoTaxRules()
+
+# Calculate Colorado income tax
+co_income_tax = co_tax.calculate_income_tax(
+    taxable_income=Decimal('75000'),
+    filing_status="single",
+    year=2026
+)
+
+print(f"Colorado tax: ${co_income_tax['tax_amount']:.2f}")
+print(f"Tax rate: {co_income_tax['tax_rate']}%")
+
+# Calculate sales tax
+sales_tax = co_tax.calculate_sales_tax(
+    purchase_amount=Decimal('100'),
+    location="DENVER",
+    product_type="general"
+)
+
+print(f"Total sales tax: ${sales_tax['total_tax']:.2f}")
+print(f"Total rate: {sales_tax['total_tax_rate']}%")
+```
