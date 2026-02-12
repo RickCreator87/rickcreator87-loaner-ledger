@@ -1,0 +1,32 @@
+
+
+⭐ 2. gdf loan new — Create a New Loan Agreement
+
+Command
+`
+gdf loan new \
+  --principal 3000 \
+  --interest 0 \
+  --grace 12 \
+  --company "GitDigital Products" \
+  --co1 "Richard Kindler" \
+  --co2 "Tara Triolo" \
+  --facilitator "Richard D. Kindler"
+`
+
+What it generates
+`
+/finance/agreements/drafts/gdp-loan-2026-02-06-01/
+  agreement.md
+  metadata.yaml
+  checklist.md
+  staged-funding-plan.md
+`
+
+Automatic validations
+- Facilitator authority ≤ $100,000  
+- Principal > 0  
+- Co‑owners exist in org registry  
+- Tax-first separation rules applied  
+- Ledger entry reserved but not activated  
+
