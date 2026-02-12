@@ -1,0 +1,494 @@
+
+Best Practices
+
+1. Identity Creation
+
+· Always generate new UUIDs for new identities
+· Include complete contact information
+· Set appropriate verification levels
+· Add metadata for tracking
+
+2. Authority Granting
+
+· Grant minimum necessary permissions
+· Set reasonable expiration dates
+· Include geographic restrictions
+· Document constraints and requirements
+
+3. Tax Configuration
+
+· Keep tax rates up to date
+· Include effective and expiration dates
+· Document calculation methods
+· Include compliance requirements
+
+4. Data Quality
+
+· Validate all data before storage
+· Maintain consistent formatting
+· Include comprehensive metadata
+· Regular data quality checks
+
+Common Issues and Solutions
+
+1. UUID Generation
+
+Issue: Duplicate or invalid UUIDs
+Solution: Use proper UUID v4 generation
+
+```python
+import uuid
+identity_id = str(uuid.uuid4())
+```
+
+2. Date Formatting
+
+Issue: Invalid date formats
+Solution: Use ISO 8601 format
+
+```python
+from datetime import datetime
+date_str = datetime.utcnow().isoformat() + "Z"
+```
+
+3. Country Codes
+
+Issue: Invalid or non-standard country codes
+Solution: Use ISO 3166-1 alpha-2 codes
+
+```python
+valid_countries = ["US", "CA", "GB", "AU", "DE", "FR", "JP"]
+```
+
+4. Monetary Values
+
+Issue: Inconsistent decimal formatting
+Solution: Use Decimal for calculations, store as float
+
+```python
+from decimal import Decimal
+amount = Decimal("1000.50")
+```
+
+References
+
+External Standards
+
+· JSON Schema: https://json-schema.org/
+· ISO 8601: Date and time format
+· ISO 3166: Country codes
+· RFC 4122: UUID specification
+· USPS: State abbreviations
+
+Internal References
+
+· Usage Guide: How to use the system
+· API Documentation: API specifications
+· Governance Rules: Business rules
+· Test Suite: Validation tests
+
+Support
+
+For questions about schemas:
+
+· Check the examples directory
+· Review the test cases
+· Contact: schemas@richards-credit-authority.example.com
+
+For schema changes or extensions:
+
+· Submit a pull request
+· Include updated documentation
+· Update test cases
+
+```
+
+
+
+- [ ] added
+      
+
+## 8. CI/CD Configuration
+
+### `.github/workflows/ci.yml`
+
+```yaml
+# .github/workflows/ci.yml
+# Continuous Integration for Richard's Credit Authority
+
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run weekly on Sundays
+    - cron: '0 0 * * 0'
+
+env:
+  PYTHON_VERSION: '3.11'
+  POSTGRES_VERSION: '14'
+  REDIS_VERSION: '7'
+
+jobs:
+  lint-and-format:
+    name: Lint and Format
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install black flake8 isort mypy yamllint
+    
+    - name: Check code formatting with Black
+      run: |
+        black --check --diff .
+    
+    - name: Lint Python code with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+    
+    - name: Check import sorting with isort
+      run: |
+        isort --check-only --diff .
+    
+    - name: Type checking with mypy
+      run: |
+        mypy --ignore-missing-imports --strict .
+    
+    - name: Lint YAML files
+      run: |
+        yamllint -c .yamllint.yaml .
+    
+    - name: Lint Markdown files
+      uses: avto-dev/markdown-lint@v1
+      with:
+        config: '.markdownlint.yaml'
+        args: '**/*.md'
+
+  schema-validation:
+    name: Schema Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install dependencies
+      run: |
+        pip install pyyaml jsonschema
+    
+    - name: Validate schema files
+      run: |
+        python scripts/validate_schemas.py
+    
+    - name: Validate example files against schemas
+      run: |
+        python scripts/validate_examples.py
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:${{ env.POSTGRES_VERSION }}
+        env:
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:${{ env.REDIS_VERSION }}
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-xdist
+    
+    - name: Run unit tests
+      env:
+        DATABASE_URL: postgresql://postgres:test_password@localhost:5432/test_db
+        REDIS_URL: redis://localhost:6379/0
+      run: |
+        pytest tests/ -v --cov=. --cov-report=xml --cov-report=html --junitxml=junit.xml
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: |
+          junit.xml
+          htmlcov/
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [lint-and-format, schema-validation, unit-tests]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest
+    
+    - name: Run integration tests
+      run: |
+        python -m pytest tests/test_integration.py -v
+    
+    - name: Run end-to-end workflow test
+      run: |
+        python scripts/test_workflow.py
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Run Bandit security scan
+      uses: shundor/python-bandit-action@master
+      with:
+        target: .
+        exit_zero_on_issues: false
+    
+    - name: Run Safety check
+      run: |
+        pip install safety
+        safety check --full-report
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+    
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  build-and-package:
+    name: Build and Package
+    runs-on: ubuntu-latest
+    needs: [integration-tests, security-scan]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install build dependencies
+      run: |
+        pip install build twine
+    
+    - name: Build package
+      run: |
+        python -m build
+    
+    - name: Check package
+      run: |
+        twine check dist/*
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: distribution
+        path: dist/
+
+  docker-build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: [build-and-package]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: |
+          rickcreator/richards-credit-authority
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha
+    
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  documentation:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install documentation dependencies
+      run: |
+        pip install mkdocs mkdocs-material mkdocstrings[python]
+    
+    - name: Build documentation
+      run: |
+        mkdocs build --site-dir public
+    
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        keep_files: true
+
+  notify:
+    name: Notify Status
+    runs-on: ubuntu-latest
+    needs: [docker-build, documentation]
+    if: always()
+    
+    steps:
+    - name: Determine notification status
+      id: check-status
+      run: |
+        if [[ "${{ needs.lint-and-format.result }}" == "success" && \
+              "${{ needs.unit-tests.result }}" == "success" && \
+              "${{ needs.integration-tests.result }}" == "success" && \
+              "${{ needs.security-scan.result }}" == "success" ]]; then
+          echo "status=success" >> $GITHUB_OUTPUT
+          echo "message=✅ All checks passed!" >> $GITHUB_OUTPUT
+        else
+          echo "status=failure" >> $GITHUB_OUTPUT
+          echo "message=❌ Some checks failed. Check the workflow for details." >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Send Slack notification
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ steps.check-status.outputs.status }}
+        text: ${{ steps.check-status.outputs.message }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: always()
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [docker-build, documentation]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Get version from pyproject.toml
+      id: get-version
+      run: |
+        VERSION=$(python -c "import tomli; print(tomli.load(open('pyproject.toml', 'rb'))['project']['version'])")
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ steps.get-version.outputs.version }}
+        name: Release v${{ steps.get-version.outputs.version }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+        files: |
+          dist/*.whl
+          dist/*.tar.gz
+```
