@@ -1,0 +1,296 @@
+schemas/tax.schema.yaml
+
+```yaml
+# schemas/tax.schema.yaml
+# Tax jurisdiction and calculation schema
+
+$schema: http://json-schema.org/draft-07/schema#
+$id: https://RickCreator87.github.io/richards-credit-authority/schemas/tax.schema.yaml
+
+title: Tax Jurisdiction Schema
+description: Defines tax jurisdictions, rates, and calculation rules
+version: 1.0.0
+
+type: object
+required:
+  - jurisdiction_code
+  - jurisdiction_name
+  - effective_date
+  - tax_rates
+
+properties:
+  jurisdiction_code:
+    type: string
+    pattern: "^[A-Z]{2}(-[A-Z0-9]+)?$"
+    description: ISO jurisdiction code (e.g., US, US-CO, US-NY)
+
+  jurisdiction_name:
+    type: string
+    description: Human-readable jurisdiction name
+
+  jurisdiction_type:
+    type: string
+    enum:
+      - federal
+      - state
+      - provincial
+      - county
+      - city
+      - municipal
+      - special_district
+
+  effective_date:
+    type: string
+    format: date
+    description: When these tax rules take effect
+
+  expiration_date:
+    type: string
+    format: date
+    description: When these tax rules expire
+
+  parent_jurisdiction:
+    type: string
+    pattern: "^[A-Z]{2}(-[A-Z0-9]+)?$"
+    description: Parent jurisdiction code
+
+  tax_rates:
+    type: array
+    items:
+      type: object
+      required:
+        - tax_type
+        - rate
+      properties:
+        tax_type:
+          type: string
+          enum:
+            - income
+            - sales
+            - use
+            - property
+            - excise
+            - withholding
+            - franchise
+            - payroll
+            - capital_gains
+            - interest
+            - dividend
+        rate:
+          type: number
+          minimum: 0
+          maximum: 100
+        rate_type:
+          type: string
+          enum: ["flat", "graduated", "marginal"]
+        brackets:
+          type: array
+          items:
+            type: object
+            properties:
+              min_amount:
+                type: number
+                minimum: 0
+              max_amount:
+                type: number
+              rate:
+                type: number
+                minimum: 0
+        applies_to:
+          type: array
+          items:
+            type: string
+            enum:
+              - individuals
+              - corporations
+              - partnerships
+              - trusts
+              - non_profits
+        exemptions:
+          type: array
+          items:
+            type: object
+            properties:
+              exemption_type:
+                type: string
+              amount:
+                type: number
+                minimum: 0
+              qualification:
+                type: object
+
+  reporting_requirements:
+    type: object
+    properties:
+      forms:
+        type: array
+        items:
+          type: object
+          properties:
+            form_code:
+              type: string
+            description:
+              type: string
+            frequency:
+              type: string
+              enum: ["annually", "quarterly", "monthly", "weekly"]
+            due_date:
+              type: string
+              description: "MM-DD format or cron expression"
+      thresholds:
+        type: object
+        additionalProperties:
+          type: number
+          minimum: 0
+
+  withholding_rules:
+    type: object
+    properties:
+      required:
+        type: boolean
+      threshold:
+        type: number
+        minimum: 0
+      rates:
+        type: object
+        additionalProperties:
+          type: number
+      exemptions:
+        type: array
+        items:
+          type: string
+
+  compliance_rules:
+    type: object
+    properties:
+      record_keeping_years:
+        type: integer
+        minimum: 1
+      penalties:
+        type: array
+        items:
+          type: object
+          properties:
+            violation:
+              type: string
+            penalty_amount:
+              type: number
+              minimum: 0
+            penalty_type:
+              type: string
+              enum: ["fixed", "percentage", "tiered"]
+      grace_period_days:
+        type: integer
+        minimum: 0
+
+  reciprocity_agreements:
+    type: array
+    items:
+      type: object
+      properties:
+        with_jurisdiction:
+          type: string
+        agreement_type:
+          type: string
+        effective_date:
+          type: string
+          format: date
+        terms:
+          type: object
+
+  calculation_engine:
+    type: object
+    properties:
+      engine_type:
+        type: string
+        enum: ["formula", "table", "algorithm", "api"]
+      formula:
+        type: string
+      rounding_rules:
+        type: object
+        properties:
+          method:
+            type: string
+            enum: ["up", "down", "nearest"]
+          increment:
+            type: number
+            minimum: 0.01
+      validation_rules:
+        type: array
+        items:
+          type: object
+          properties:
+            condition:
+              type: string
+            error_message:
+              type: string
+
+  metadata:
+    type: object
+    properties:
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+      source:
+        type: string
+        description: Source of tax rate information
+      verification_status:
+        type: string
+        enum: ["unofficial", "verified", "official"]
+      notes:
+        type: string
+
+additionalProperties: false
+
+examples:
+  - jurisdiction_code: "US"
+    jurisdiction_name: "United States Federal"
+    jurisdiction_type: "federal"
+    effective_date: "2026-01-01"
+    expiration_date: "2026-12-31"
+    tax_rates:
+      - tax_type: "income"
+        rate_type: "graduated"
+        brackets:
+          - min_amount: 0
+            max_amount: 11000
+            rate: 10
+          - min_amount: 11001
+            max_amount: 44725
+            rate: 12
+          - min_amount: 44726
+            max_amount: 95375
+            rate: 22
+        applies_to: ["individuals"]
+    reporting_requirements:
+      forms:
+        - form_code: "1040"
+          description: "Individual Income Tax Return"
+          frequency: "annually"
+          due_date: "04-15"
+      thresholds:
+        filing_required: 12950
+    withholding_rules:
+      required: true
+      threshold: 0
+      rates:
+        supplemental: 22
+        backup: 24
+    compliance_rules:
+      record_keeping_years: 7
+      penalties:
+        - violation: "late_filing"
+          penalty_amount: 435
+          penalty_type: "fixed"
+      grace_period_days: 0
+    metadata:
+      created_at: "2026-01-15T12:00:00Z"
+      updated_at: "2026-01-15T12:00:00Z"
+      source: "IRS Publication 15-T"
+      verification_status: "official"
+```
+
+
