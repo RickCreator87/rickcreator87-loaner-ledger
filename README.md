@@ -1,3 +1,9 @@
+<a href="https://www.buymeacoffee.com/RickCreator87" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="RickCreator87" data-color="#FFDD00" data-emoji="📱"  data-font="Cookie" data-text="Buy me a " data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+
+
+
+
 https://studio.buymeacoffee.com/stream-alert/page/Rickcreator1987?user_key=93ebad4c-f9cd-4d46-96a6-302ce2a29e03
 <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="Rickcreator1987" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 
